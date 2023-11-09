@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 void main() {
   runApp(const MyApp());
 }
@@ -19,16 +18,12 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key});
-  
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
-  
 }
 
-
 class _MyHomePageState extends State<MyHomePage> {
-  List<String> skills = ['Skill 1', 'Skill 2', 'Skill 3'];
   final TextEditingController _inputController = TextEditingController();
   final List<String> inputList = ['Hi'];
   final List<String> outputList = ['Hello!how can I help you'];
@@ -92,37 +87,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 icon: const Icon(Icons.send),
                 onPressed: _submitInput,
               ),
-              buildName(),
-              buildAnimatedText(),
             ],
           ),
         ),
       ),
     );
   }
-
-  Widget buildName() => text('hello!how can I help you',
-  style:const TextStyle(fontSize: 35.0),
-  );
-  buildAnimatedText()=> AnimatedTextKit(
-    animatedTexts:[
-      for(var i=0;i<skills.length;i++)
-    
-    ],
-  
-    repeatForever: true,
-        pause: const Duration(milliseconds: 50),
-        displayFullTextOnTap: true,
-        stopPauseOnTap: true,
-  );
-  buildText(int index){
-    return TyperAnimatedText(
-      skills[index],
-    );
-  }
-
-  text(String s, {required TextStyle style}) {}
-
 }
 
 class DisplayList extends StatelessWidget {
@@ -190,4 +160,3 @@ class DisplayList extends StatelessWidget {
     );
   }
 }
-
