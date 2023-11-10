@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 void main() {
   runApp(const MyApp());
@@ -26,17 +27,29 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _inputController = TextEditingController();
   final List<String> inputList = ['Hi'];
-  final List<String> outputList = ['Hello!how can I help you'];
+  final List<String> outputList = ['Hello! How can I help you?'];
   final List<String> inputList1 = ['What is chatgpt?'];
   final List<String> outputList1 = [
     'ChatGPT is an artificial intelligence (AI) chatbot that uses natural language processing to create humanlike conversational dialogue. The language model can respond to questions and compose various written content, including articles, social media posts, essays, code, and emails.'
   ];
 
   final Map<String, String> inputOutputMap = {
-    'Hi': 'Hello!how can I help you',
+    'Hi': 'Hello! How can I help you?',
     'What is chatgpt?':
         'ChatGPT is an artificial intelligence (AI) chatbot that uses natural language processing to create humanlike conversational dialogue. The language model can respond to questions and compose various written content, including articles, social media posts, essays, code, and emails.'
   };
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeAnimation();
+  }
+
+  void _initializeAnimation() {
+    _inputController.addListener(() {
+      setState(() {}); // Trigger rebuild to update the animation
+    });
+  }
 
   void _submitInput() {
     final inputText = _inputController.text;
@@ -64,6 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
           DisplayList(
             inputList: inputList,
             outputList: outputList,
+            
             inputList1: inputList1,
             outputList1: outputList1,
           ),
@@ -156,7 +170,56 @@ class DisplayList extends StatelessWidget {
           Text(inputText),
         ],
       ),
-      subtitle: Text(outputText),
+      subtitle: AnimatedOutputText(outputText),
+    );
+  }
+}
+
+class AnimatedOutputText extends StatefulWidget {
+  final String text;
+
+  const AnimatedOutputText(this.text, {Key? key}) : super(key: key);
+
+  @override
+  _AnimatedOutputTextState createState() => _AnimatedOutputTextState();
+}
+
+class _AnimatedOutputTextState extends State<AnimatedOutputText> {
+  late TextEditingController _controller;
+  late Completer<void> _animationCompleter;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.text);
+    _animationCompleter = Completer<void>();
+    _animateText();
+  }
+
+  Future<void> _animateText() async {
+    await Future.delayed(const Duration(milliseconds: 500)); 
+    _controller.text = ''; 
+    await Future.delayed(const Duration(milliseconds: 100)); 
+    for (var i = 0; i <= widget.text.length; i++) {
+      _controller.text = widget.text.substring(0, i);
+      await Future.delayed(const Duration(milliseconds: 50));
+    }
+    _animationCompleter.complete(); 
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<void>(
+      future: _animationCompleter.future,
+      builder: (context, snapshot) {
+        return TextField(
+          enabled: false,
+          controller: _controller,
+          decoration: const InputDecoration(
+            border: InputBorder.none,
+          ),
+        );
+      },
     );
   }
 }
